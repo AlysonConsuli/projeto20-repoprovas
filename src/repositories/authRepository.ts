@@ -1,6 +1,6 @@
 import prisma from "../config/db.js";
 
-import { UserInsertData } from "../services/authService.js";
+import { UserInsertData, TokenInsertData } from "../services/authService.js";
 
 export const findUserByEmail = async (email: string) => {
   const user = await prisma.users.findFirst({
@@ -14,5 +14,20 @@ export const findUserByEmail = async (email: string) => {
 export const insertUser = async (userData: UserInsertData) => {
   await prisma.users.create({
     data: userData,
+  });
+};
+
+export const findTokenOnBlacklist = async (token: string) => {
+  const blacklistToken = await prisma.blacklist.findFirst({
+    where: {
+      token,
+    },
+  });
+  return blacklistToken;
+};
+
+export const insertTokenToBlacklist = async (tokenData: TokenInsertData) => {
+  await prisma.blacklist.create({
+    data: tokenData,
   });
 };

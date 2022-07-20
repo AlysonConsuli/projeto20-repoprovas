@@ -14,3 +14,9 @@ export const signin = async (req: Request, res: Response) => {
   const token = await authService.signin(user);
   res.send(token);
 };
+
+export const logout = async (req: Request, res: Response) => {
+  const token: string = res.locals.token;
+  await authService.logout({ token });
+  res.sendStatus(200);
+};

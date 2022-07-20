@@ -2,6 +2,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import "../config/setup.js";
 import { Users } from "@prisma/client";
+import { Blacklist } from "@prisma/client";
 
 import {
   conflictError,
@@ -11,6 +12,7 @@ import {
 import * as authRepository from "../repositories/authRepository.js";
 
 export type UserInsertData = Omit<Users, "id" | "createdAt">;
+export type TokenInsertData = Omit<Blacklist, "id" | "createdAt">;
 
 export const signup = async (userData: UserInsertData) => {
   const { email, password } = userData;
@@ -34,4 +36,8 @@ export const signin = async (userData: UserInsertData) => {
   const secretKey = process.env.JWT_SECRET_KEY;
   const token: string = jwt.sign(user, secretKey);
   return token;
+};
+
+export const logout = async (tokenData: TokenInsertData) => {
+  await authRepository.insertTokenToBlacklist(tokenData);
 };

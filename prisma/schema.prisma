@@ -18,3 +18,11 @@ model Users {
 
   @@map("users")
 }
+
+model Blacklist {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  createdAt DateTime @default(now()) @db.Timestamptz()
+
+  @@map("blacklist")
+}
