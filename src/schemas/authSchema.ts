@@ -1,7 +1,18 @@
 import Joi from "joi";
 import { UserInsertData } from "../services/authService.js";
 
-export const authSchema = Joi.object<UserInsertData>({
+interface PasswordConfirmation {
+  passwordConfirmation: string;
+}
+type SignupInsertData = UserInsertData & PasswordConfirmation;
+
+export const signupSchema = Joi.object<SignupInsertData>({
+  email: Joi.string().email().required(),
+  password: Joi.string().required(),
+  passwordConfirmation: Joi.string().required().valid(Joi.ref("password")),
+});
+
+export const signinSchema = Joi.object<UserInsertData>({
   email: Joi.string().email().required(),
   password: Joi.string().required(),
 });
