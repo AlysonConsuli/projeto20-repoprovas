@@ -1,6 +1,6 @@
 import prisma from "../config/db.js";
 
-import { UserInsertData, TokenInsertData } from "../services/authService.js";
+import { TokenInsertData, UserInsertData } from "../interfaces/createData.js";
 
 export const findUserByEmail = async (email: string) => {
   const user = await prisma.users.findFirst({
