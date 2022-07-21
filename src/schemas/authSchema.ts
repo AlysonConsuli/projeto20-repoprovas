@@ -9,7 +9,7 @@ type SignupInsertData = UserInsertData & PasswordConfirmation;
 export const signupSchema = Joi.object<SignupInsertData>({
   email: Joi.string().email().required(),
   password: Joi.string().required(),
-  passwordConfirmation: Joi.string().required().valid(Joi.ref("password")),
+  passwordConfirmation: Joi.ref("password"),
 });
 
 export const signinSchema = Joi.object<UserInsertData>({

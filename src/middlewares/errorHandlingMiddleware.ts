@@ -24,7 +24,7 @@ export const notFoundError = (message: string) => {
 };
 
 export const errorHandlingMiddleware = (
-  err,
+  err: any,
   req: Request,
   res: Response,
   next: NextFunction
