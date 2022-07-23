@@ -12,5 +12,5 @@ export const addTest = async (req: Request, res: Response) => {
 export const getTests = async (req: Request, res: Response) => {
   const groupBy = req.query.groupBy as GroupBy;
   const tests = await testsService.getTests(groupBy);
-  res.send(tests);
+  res.send({ tests });
 };

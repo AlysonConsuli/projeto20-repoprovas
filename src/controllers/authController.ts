@@ -12,7 +12,7 @@ export const signup = async (req: Request, res: Response) => {
 export const signin = async (req: Request, res: Response) => {
   const user: UserInsertData = req.body;
   const token = await authService.signin(user);
-  res.send(token);
+  res.send({ token });
 };
 
 export const logout = async (req: Request, res: Response) => {
