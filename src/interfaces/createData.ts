@@ -3,7 +3,6 @@ import {
   Categories,
   Disciplines,
   Teachers,
-  TeachersDisciplines,
   Terms,
   Tests,
   Users,
@@ -16,11 +15,19 @@ export type CategoryInsertData = Omit<Categories, "id" | "createdAt">;
 export type TestInsertData = Omit<Tests, "id" | "createdAt">;
 export type TeacherInsertData = Omit<Teachers, "id" | "createdAt">;
 export type DisciplineInsertData = Omit<Disciplines, "id" | "createdAt">;
-export type TeacherDisciplineInsertData = Omit<
-  TeachersDisciplines,
-  "id" | "createdAt"
->;
 interface PasswordConfirmation {
   passwordConfirmation: string;
 }
 export type SignupInsertData = UserInsertData & PasswordConfirmation;
+export type AppInsertData =
+  | TermInsertData
+  | CategoryInsertData
+  | TestInsertData
+  | TeacherInsertData
+  | DisciplineInsertData;
+export type Table =
+  | "terms"
+  | "categories"
+  | "tests"
+  | "teachers"
+  | "disciplines";

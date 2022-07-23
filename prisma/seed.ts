@@ -26,14 +26,14 @@ const disciplines = [
   { name: "Autoconfiança", termId: 6 },
 ];
 
-const teachersDisciplines = [
-  { teacherId: 1, disciplineId: 1 },
-  { teacherId: 1, disciplineId: 2 },
-  { teacherId: 1, disciplineId: 3 },
-  { teacherId: 2, disciplineId: 4 },
-  { teacherId: 2, disciplineId: 5 },
-  { teacherId: 2, disciplineId: 6 },
-];
+// const teachersDisciplines = [
+//   { teacherId: 1, disciplineId: 1 },
+//   { teacherId: 1, disciplineId: 2 },
+//   { teacherId: 1, disciplineId: 3 },
+//   { teacherId: 2, disciplineId: 4 },
+//   { teacherId: 2, disciplineId: 5 },
+//   { teacherId: 2, disciplineId: 6 },
+// ];
 
 async function main() {
   await prisma.terms.createMany({ data: terms, skipDuplicates: true });
@@ -46,10 +46,10 @@ async function main() {
     data: disciplines,
     skipDuplicates: true,
   });
-  await prisma.teachersDisciplines.createMany({
-    data: teachersDisciplines,
-    skipDuplicates: true,
-  });
+  // await prisma.teachersDisciplines.createMany({
+  //   data: teachersDisciplines,
+  //   skipDuplicates: true,
+  // });
 }
 
 main()

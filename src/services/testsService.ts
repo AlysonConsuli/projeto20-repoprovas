@@ -1,17 +1,10 @@
-import { notFoundError } from "../middlewares/errorHandlingMiddleware.js";
 import { TestInsertData } from "../interfaces/createData.js";
-import * as testsRepository from "../repositories/testsRepository.js";
+import * as appRepository from "../repositories/appRepository.js";
+import { validateHasData } from "../utils/validateData.js";
 
 export const addTest = async (test: TestInsertData) => {
-  const category = await testsRepository.findCategoryById(test.categoryId);
-  if (!category) {
-    throw notFoundError("Category not found!");
-  }
-  const teacherDiscipline = await testsRepository.findTeacherDisciplineById(
-    test.teacherDisciplineId
-  );
-  if (!teacherDiscipline) {
-    throw notFoundError("TeacherDiscipline not found!");
-  }
-  await testsRepository.insertTest(test);
+  await validateHasData(test.categoryId, "categories", "Category");
+  await validateHasData(test.teacherId, "teachers", "Teacher");
+  await validateHasData(test.disciplineId, "disciplines", "Discipline");
+  await appRepository.insertData(test, "tests");
 };
