@@ -11,4 +11,5 @@ export const validateHasData = async (
   if (!data) {
     throw notFoundError(`${tableTitle} not found!`);
   }
+  return data;
 };

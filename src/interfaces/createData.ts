@@ -31,3 +31,4 @@ export type Table =
   | "tests"
   | "teachers"
   | "disciplines";
+export type GroupBy = "teachers" | "disciplines";
