@@ -40,10 +40,23 @@ export const findTestsByDisciplines = async () => {
 
 export const findTestsByTeachers = async () => {
   const tests = await prisma.teachers.findMany({
-    include: {
+    select: {
+      name: true,
       tests: {
-        include: {
-          discipline: true,
+        select: {
+          name: true,
+          pdfUrl: true,
+          category: {
+            select: {
+              name: true,
+            },
+          },
+          discipline: {
+            select: {
+              name: true,
+              termId: true,
+            },
+          },
         },
         orderBy: {
           categoryId: "asc",

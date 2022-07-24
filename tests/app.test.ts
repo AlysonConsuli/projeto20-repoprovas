@@ -7,6 +7,7 @@ import * as testFactory from "./factories/testFactory.js";
 beforeEach(async () => {
   await prisma.$executeRaw`TRUNCATE TABLE users CASCADE`;
   await prisma.$executeRaw`TRUNCATE TABLE blacklist CASCADE`;
+  await prisma.$executeRaw`TRUNCATE TABLE tests CASCADE`;
 });
 
 describe("User tests suite", () => {
@@ -83,7 +84,52 @@ describe("Tests tests suite", () => {
     const test = await prisma.tests.findFirst({
       where: { name, pdfUrl, categoryId, teacherId, disciplineId },
     });
-    expect(testBody.name).toBe(test.name);
+    expect(name).toBe(test.name);
+  });
+
+  it("get tests", async () => {
+    const login = userFactory.createLogin();
+    await userFactory.createUser(login);
+    let response = await supertest(app).post(`/sign-in`).send(login);
+    const token = response.body.token;
+
+    const testBody = testFactory.testBody();
+    const test = await testFactory.createTest(testBody);
+
+    response = await supertest(app)
+      .get(`/tests`)
+      .set("Authorization", `Bearer ${token}`);
+    expect(response.body).not.toBeNull();
+  });
+
+  it("given groupBy=disciplines receive test order by disciplines", async () => {
+    const login = userFactory.createLogin();
+    await userFactory.createUser(login);
+    let response = await supertest(app).post(`/sign-in`).send(login);
+    const token = response.body.token;
+
+    const testBody = testFactory.testBody();
+    const test = await testFactory.createTest(testBody);
+
+    response = await supertest(app)
+      .get(`/tests?groupBy=disciplines`)
+      .set("Authorization", `Bearer ${token}`);
+    expect(response.body.tests[0].disciplines[0].tests[0].name).toBe(test.name);
+  });
+
+  it("given groupBy=teachers receive test order by teachers", async () => {
+    const login = userFactory.createLogin();
+    await userFactory.createUser(login);
+    let response = await supertest(app).post(`/sign-in`).send(login);
+    const token = response.body.token;
+
+    const testBody = testFactory.testBody();
+    const test = await testFactory.createTest(testBody);
+
+    response = await supertest(app)
+      .get(`/tests?groupBy=teachers`)
+      .set("Authorization", `Bearer ${token}`);
+    expect(response.body.tests[0].tests[0].name).toBe(test.name);
   });
 });
 
