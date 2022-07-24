@@ -71,13 +71,7 @@ describe("Tests tests suite", () => {
     const { name, pdfUrl, categoryId, teacherId, disciplineId } = testBody;
     response = await supertest(app)
       .post(`/test`)
-      .send({
-        name,
-        pdfUrl,
-        categoryId,
-        teacherId,
-        disciplineId,
-      })
+      .send(testBody)
       .set("Authorization", `Bearer ${token}`);
     expect(response.status).toBe(201);
 
@@ -130,6 +124,59 @@ describe("Tests tests suite", () => {
       .get(`/tests?groupBy=teachers`)
       .set("Authorization", `Bearer ${token}`);
     expect(response.body.tests[0].tests[0].name).toBe(test.name);
+  });
+
+  it("given categoryId not registered, receive 404", async () => {
+    const login = userFactory.createLogin();
+    await userFactory.createUser(login);
+    let response = await supertest(app).post(`/sign-in`).send(login);
+    const token = response.body.token;
+
+    const testBody = testFactory.testBody();
+    response = await supertest(app)
+      .post(`/test`)
+      .send({ ...testBody, categoryId: 1000 })
+      .set("Authorization", `Bearer ${token}`);
+    expect(response.status).toBe(404);
+  });
+
+  it("given teacherId not registered, receive 404", async () => {
+    const login = userFactory.createLogin();
+    await userFactory.createUser(login);
+    let response = await supertest(app).post(`/sign-in`).send(login);
+    const token = response.body.token;
+
+    const testBody = testFactory.testBody();
+    response = await supertest(app)
+      .post(`/test`)
+      .send({ ...testBody, teacherId: 1000 })
+      .set("Authorization", `Bearer ${token}`);
+    expect(response.status).toBe(404);
+  });
+
+  it("given disciplineId not registered, receive 404", async () => {
+    const login = userFactory.createLogin();
+    await userFactory.createUser(login);
+    let response = await supertest(app).post(`/sign-in`).send(login);
+    const token = response.body.token;
+
+    const testBody = testFactory.testBody();
+    response = await supertest(app)
+      .post(`/test`)
+      .send({ ...testBody, disciplineId: 1000 })
+      .set("Authorization", `Bearer ${token}`);
+    expect(response.status).toBe(404);
+  });
+
+  it("given invalid token, receive 401", async () => {
+    const token = "invalid token";
+
+    const testBody = testFactory.testBody();
+    let response = await supertest(app)
+      .post(`/test`)
+      .send(testBody)
+      .set("Authorization", `Bearer ${token}`);
+    expect(response.status).toBe(401);
   });
 });
 
