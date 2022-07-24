@@ -21,3 +21,13 @@ export const createUser = async (login: UserInsertData) => {
 
   return { ...user, plainPassword: login.password };
 };
+
+export const invalidLogin = (
+  email = +faker.random.numeric(10),
+  password = +faker.random.numeric(10)
+) => {
+  return {
+    email,
+    password,
+  };
+};

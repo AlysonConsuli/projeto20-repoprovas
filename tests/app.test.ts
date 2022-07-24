@@ -42,7 +42,7 @@ describe("User tests suite", () => {
     expect(response.status).toBe(409);
   });
 
-  it("given invalid password, receive 401", async () => {
+  it("given wrong password, receive 401", async () => {
     const login = userFactory.createLogin();
     await userFactory.createUser(login);
 
@@ -57,6 +57,12 @@ describe("User tests suite", () => {
 
     const response = await supertest(app).post(`/sign-in`).send(login);
     expect(response.status).toBe(404);
+  });
+
+  it("given invalid data, receive 422", async () => {
+    const invalidLogin = userFactory.invalidLogin();
+    let response = await supertest(app).post(`/sign-in`).send(invalidLogin);
+    expect(response.status).toBe(422);
   });
 });
 
@@ -169,14 +175,42 @@ describe("Tests tests suite", () => {
   });
 
   it("given invalid token, receive 401", async () => {
-    const token = "invalid token";
+    const invalidToken = "invalid token";
 
     const testBody = testFactory.testBody();
     let response = await supertest(app)
       .post(`/test`)
       .send(testBody)
-      .set("Authorization", `Bearer ${token}`);
+      .set("Authorization", `Bearer ${invalidToken}`);
     expect(response.status).toBe(401);
+
+    response = await supertest(app)
+      .get(`/tests`)
+      .set("Authorization", `Bearer ${invalidToken}`);
+    expect(response.status).toBe(401);
+  });
+
+  it("do not send token, receive 401", async () => {
+    const testBody = testFactory.testBody();
+    let response = await supertest(app).post(`/test`).send(testBody);
+    expect(response.status).toBe(401);
+
+    response = await supertest(app).get(`/tests`);
+    expect(response.status).toBe(401);
+  });
+
+  it("given invalid data, receive 422", async () => {
+    const login = userFactory.createLogin();
+    await userFactory.createUser(login);
+    let response = await supertest(app).post(`/sign-in`).send(login);
+    const token = response.body.token;
+
+    const invalidTest = testFactory.invalidTest();
+    response = await supertest(app)
+      .post("/test")
+      .set("Authorization", `Bearer ${token}`)
+      .send(invalidTest);
+    expect(response.status).toBe(422);
   });
 });
 

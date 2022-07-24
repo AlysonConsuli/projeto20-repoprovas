@@ -33,3 +33,19 @@ export const createTest = async (testBody: TestInsertData) => {
 
   return test;
 };
+
+export const invalidTest = (
+  name = +faker.random.numeric(10),
+  pdfUrl = +faker.random.numeric(10),
+  categoryId = 1,
+  teacherId = 1,
+  disciplineId = 1
+) => {
+  return {
+    name,
+    pdfUrl,
+    categoryId,
+    teacherId,
+    disciplineId,
+  };
+};
