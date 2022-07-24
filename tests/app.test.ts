@@ -2,7 +2,7 @@ import supertest from "supertest";
 import app from "../src/app.js";
 import prisma from "../src/config/db.js";
 import * as userFactory from "./factories/userFactory.js";
-import { UserInsertData } from "../src/interfaces/createData.js";
+import * as testFactory from "./factories/testFactory.js";
 
 beforeEach(async () => {
   await prisma.$executeRaw`TRUNCATE TABLE users CASCADE`;
@@ -51,12 +51,39 @@ describe("User tests suite", () => {
     expect(response.status).toBe(401);
   });
 
-
   it("given email not registered, receive 404", async () => {
     const login = userFactory.createLogin();
 
     const response = await supertest(app).post(`/sign-in`).send(login);
     expect(response.status).toBe(404);
+  });
+});
+
+describe("Tests tests suite", () => {
+  it("given name, pdfUrl, categoryId, teacherId, disciplineId, create test", async () => {
+    const login = userFactory.createLogin();
+    await userFactory.createUser(login);
+    let response = await supertest(app).post(`/sign-in`).send(login);
+    const token = response.body.token;
+
+    const testBody = testFactory.testBody();
+    const { name, pdfUrl, categoryId, teacherId, disciplineId } = testBody;
+    response = await supertest(app)
+      .post(`/test`)
+      .send({
+        name,
+        pdfUrl,
+        categoryId,
+        teacherId,
+        disciplineId,
+      })
+      .set("Authorization", `Bearer ${token}`);
+    expect(response.status).toBe(201);
+
+    const test = await prisma.tests.findFirst({
+      where: { name, pdfUrl, categoryId, teacherId, disciplineId },
+    });
+    expect(testBody.name).toBe(test.name);
   });
 });
 
