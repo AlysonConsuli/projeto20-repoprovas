@@ -37,47 +37,55 @@ model Terms {
 }
 
 model Disciplines {
-  id                   Int                    @id @default(autoincrement())
-  name                 String                 @unique
-  termId               Int
-  createdAt            DateTime               @default(now()) @db.Timestamptz()
-  term                 Terms                  @relation(fields: [termId], references: [id])
-  tests                Tests[]
-  teachers             Teachers[]
+  id                  Int                   @id @default(autoincrement())
+  name                String                @unique
+  termId              Int
+  createdAt           DateTime              @default(now()) @db.Timestamptz()
+  term                Terms                 @relation(fields: [termId], references: [id])
+  teacherDisciplines TeachersDisciplines[]
 
   @@map("disciplines")
 }
 
 model Teachers {
-  id          Int           @id @default(autoincrement())
-  name        String        @unique
-  createdAt   DateTime      @default(now()) @db.Timestamptz()
-  tests       Tests[]
-  disciplines Disciplines[]
+  id                  Int                   @id @default(autoincrement())
+  name                String                @unique
+  createdAt           DateTime              @default(now()) @db.Timestamptz()
+  teachersDisciplines TeachersDisciplines[]
 
   @@map("teachers")
 }
 
+model TeachersDisciplines {
+  id           Int         @id @default(autoincrement())
+  teacherId    Int
+  disciplineId Int
+  createdAt    DateTime    @default(now()) @db.Timestamptz()
+  teacher      Teachers    @relation(fields: [teacherId], references: [id])
+  discipline   Disciplines @relation(fields: [disciplineId], references: [id])
+  tests        Tests[]
+
+  @@map("teachersDisciplines")
+}
+
 model Categories {
-  id                   Int                    @id @default(autoincrement())
-  name                 String                 @unique
-  createdAt            DateTime               @default(now()) @db.Timestamptz()
-  tests                Tests[]
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  createdAt DateTime @default(now()) @db.Timestamptz()
+  tests     Tests[]
 
   @@map("categories")
 }
 
 model Tests {
-  id                   Int                  @id @default(autoincrement())
-  name                 String
-  pdfUrl               String
-  categoryId           Int
-  teacherId            Int
-  disciplineId         Int
-  createdAt            DateTime             @default(now()) @db.Timestamptz()
-  category             Categories           @relation(fields: [categoryId], references: [id])
-  teacher              Teachers             @relation(fields: [teacherId], references: [id])
-  discipline           Disciplines          @relation(fields: [disciplineId], references: [id])
+  id                  Int                 @id @default(autoincrement())
+  name                String
+  pdfUrl              String
+  categoryId          Int
+  teacherDisciplineId Int
+  createdAt           DateTime            @default(now()) @db.Timestamptz()
+  category            Categories          @relation(fields: [categoryId], references: [id])
+  teacherDiscipline   TeachersDisciplines @relation(fields: [teacherDisciplineId], references: [id])
 
   @@map("tests")
 }

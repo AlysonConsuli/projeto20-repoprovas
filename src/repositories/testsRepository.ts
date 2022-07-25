@@ -7,28 +7,25 @@ export const findTests = async () => {
 
 export const findTestsByDisciplines = async () => {
   const tests = await prisma.terms.findMany({
-    select: {
-      number: true,
+    include: {
       disciplines: {
         select: {
+          id: true,
           name: true,
-          tests: {
+          term: {},
+          teacherDisciplines: {
             select: {
-              name: true,
-              pdfUrl: true,
-              category: {
+              id: true,
+              discipline: {},
+              teacher: {},
+              tests: {
                 select: {
+                  id: true,
                   name: true,
+                  pdfUrl: true,
+                  category: {},
                 },
               },
-              teacher: {
-                select: {
-                  name: true,
-                },
-              },
-            },
-            orderBy: {
-              categoryId: "asc",
             },
           },
         },
@@ -39,29 +36,12 @@ export const findTestsByDisciplines = async () => {
 };
 
 export const findTestsByTeachers = async () => {
-  const tests = await prisma.teachers.findMany({
+  const tests = await prisma.teachersDisciplines.findMany({
     select: {
-      name: true,
-      tests: {
-        select: {
-          name: true,
-          pdfUrl: true,
-          category: {
-            select: {
-              name: true,
-            },
-          },
-          discipline: {
-            select: {
-              name: true,
-              termId: true,
-            },
-          },
-        },
-        orderBy: {
-          categoryId: "asc",
-        },
-      },
+      id: true,
+      discipline: {},
+      teacher: {},
+      tests: { select: { id: true, name: true, pdfUrl: true, category: {} } },
     },
   });
   return tests;
