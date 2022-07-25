@@ -42,7 +42,7 @@ model Disciplines {
   termId              Int
   createdAt           DateTime              @default(now()) @db.Timestamptz()
   term                Terms                 @relation(fields: [termId], references: [id])
-  teachersDisciplines TeachersDisciplines[]
+  teacherDisciplines TeachersDisciplines[]
 
   @@map("disciplines")
 }
