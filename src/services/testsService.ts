@@ -5,8 +5,11 @@ import * as testsRepository from "../repositories/testsRepository.js";
 
 export const addTest = async (test: TestInsertData) => {
   await validateHasData(test.categoryId, "categories", "Category");
-  await validateHasData(test.teacherId, "teachers", "Teacher");
-  await validateHasData(test.disciplineId, "disciplines", "Discipline");
+  await validateHasData(
+    test.teacherDisciplineId,
+    "teachersDisciplines",
+    "TeacherDiscipline"
+  );
   await appRepository.insertData(test, "tests");
 };
 
